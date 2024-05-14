@@ -115,7 +115,7 @@
     return this.safety ? "Safety enabled!" : "Safety disabled!";
   }
   reload(amount) {
-    if (typeof amount !== 'number' || amount < 0) {
+    if (typeof amount !== 'number' || amount <= 0) {
       return "Error reloading!";
     }
     this.projectiles = Math.min(this.capacity, this.projectiles + amount);
@@ -169,30 +169,34 @@
 
     // 👉 CHALLENGE 4 AntFarm
     class AntFarm {
-      constructor(...antNames) {
-        this.ants =antNames.map(name => ({ name, health: 100}));
-      }
-      work() {
-        if (this.ants.length === 0){
-          return "Noants here. did you work them to death?";
-        }
-        this.ants.forEach(ant => {
-          ant.health -= 20;
-          if(ant.health <= 0) {
-            this.ants.splice(this.ants.indexOf(ant), 1);
-          }
-        });
-        return `${this.ants.length} ants starting work!`;
-      }
-      feed(name) {
-        const ant = this.ants.find(ant => ant.name ===name);
-        if (!ant){
-          return `${name} not found!`;
-        }
-        ant.health += 15;
-        return "Yum!";
-      }
+  constructor(...antNames) {
+    this.ants = antNames.map(name => ({ name, health: 100 }));
+  }
+
+  work() {
+    if (this.ants.length === 0) {
+      return "No ants here. Did you work them to death?";
     }
+
+    this.ants.forEach(ant => {
+      ant.health -= 20;
+      if (ant.health <= 0) {
+        this.ants.splice(this.ants.indexOf(ant), 1);
+      }
+    });
+
+    return `${this.ants.length} ant${this.ants.length === 1 ? '' : 's'} starting work!`;
+  }
+
+  feed(name) {
+    const ant = this.ants.find(ant => ant.name === name);
+    if (!ant) {
+      return `${name} not found!`;
+    }
+    ant.health += 15;
+    return "Yum!";
+  }
+}
       // 🧠 Constructor takes **any** number of arguments, which are strings: the names of your ants
       // 🧠 Instances of AntFarm have an `ants` property holding an array of ants:
       //      * Each ant is an object with a `name` prop and a `health` prop that starts at 100
@@ -462,16 +466,16 @@
           } catch (err) { actual = err.message }
           return [description, expected, actual]
         },
-        function () {
-          let actual, description = 'Feeding increases 15 health points of lucky ant(s)'
-          let expected = [{ name: "Jess", "health": 115 }, { name: "Blake", health: 100 }, { name: "Jess", health: 115 }]
-          try {
-            const farm = new AntFarm('Jess', 'Blake', 'Jess')
-            farm.feed('Jess')
-            actual = farm.ants
-          } catch (err) { actual = err.message }
-          return [description, expected, actual]
-        },
+          function () {
+            let actual, description = 'Feeding increases 15 health points of lucky ant(s)'
+            let expected = [{ name: "Jess", "health": 115 }, { name: "Blake", health: 100 }, { name: "Jess", health: 115 }]
+            try {
+              const farm = new AntFarm('Jess', 'Blake', 'Jess')
+              farm.feed('Jess')
+              actual = farm.ants
+            } catch (err) { actual = err.message }
+            return [description, expected, actual]
+          },
         function () {
           let actual, description = 'Feeding returns the correct string'
           let expected = ["Yum!", "bad name not found!", "another bad name not found!"]
