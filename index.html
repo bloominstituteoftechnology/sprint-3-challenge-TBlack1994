@@ -174,27 +174,31 @@
   }
 
   work() {
-    if (this.ants.length === 0) {
+    const antCount = this.ants.length
+    if (!antCount) {
       return "No ants here. Did you work them to death?";
     }
-
+    let message = `${this.ants.length} ants starting work!`;
     this.ants.forEach(ant => {
       ant.health -= 20;
       if (ant.health <= 0) {
-        this.ants.splice(this.ants.indexOf(ant), 1);
+        this.ants = this.ants.filter(a => a != ant) 
       }
+     /* if (ant.health <= 0) {
+        this.ants.splice(this.ants.indexOf(ant), 1);
+      }*/
     });
 
-    return `${this.ants.length} ant${this.ants.length === 1 ? '' : 's'} starting work!`;
-  }
+    return message
+  } 
 
   feed(name) {
-    const ant = this.ants.find(ant => ant.name === name);
-    if (!ant) {
-      return `${name} not found!`;
+    const ant = this.ants.filter(ant => ant.name === name);
+    if (ant.length > 0) {
+      ant.forEach(a => a.health += 15);
+      return "Yum!"
     }
-    ant.health += 15;
-    return "Yum!";
+    return `${name} not found!`;
   }
 }
       // 🧠 Constructor takes **any** number of arguments, which are strings: the names of your ants
